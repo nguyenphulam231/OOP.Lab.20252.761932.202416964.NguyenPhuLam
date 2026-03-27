@@ -19,7 +19,6 @@ public class Calculate {
 		double sum = num1+num2;
 		double diff= num1-num2;
 		double prod= num1*num2;
-	
 		if(icom == 1)
 		{
 			JOptionPane.showMessageDialog(null, sum);

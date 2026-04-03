@@ -1,0 +1,10 @@
+Trả lời câu hỏi mục 8: 
+Hệ thống Java không cho phép thực hiện điều này do vi phạm quy tắc về Chữ ký hàm (Method Signature).
+
+Định nghĩa chữ ký hàm: Để phân biệt các hàm nạp chồng, trình biên dịch Java dựa vào số lượng, kiểu dữ liệu và thứ tự của các tham số. Tên của tham số (như title hay category) không có giá trị trong việc phân biệt các hàm.
+
+Vấn đề thực tế: * Hàm khởi tạo bằng title có dạng: public DigitalVideoDisc(String title).
+
+Hàm khởi tạo bằng category có dạng: public DigitalVideoDisc(String category).
+
+Kết quả: Cả hai hàm đều có cùng một chữ ký là DigitalVideoDisc(String). Khi xuất hiện lệnh gọi new DigitalVideoDisc("Action"), trình biên dịch sẽ bị xung đột vì không thể xác định giá trị chuỗi đó đại diện cho tiêu đề hay danh mục.

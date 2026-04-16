@@ -1,6 +1,3 @@
-package hust.soict.dsai.aims.cart;
-
-import hust.soict.dsai.aims.disc.DigitalVideoDisc;
 
 public class Cart {
     public static final int MAX_NUMBERS_ORDERED = 20;
@@ -19,11 +16,11 @@ public class Cart {
     }
 
     // Nạp chồng Thêm một danh sách đĩa (Mảng)
-    public void addDigitalVideoDisc(DigitalVideoDisc[] dvdList) {
-        for (DigitalVideoDisc disc : dvdList) {
-            addDigitalVideoDisc(disc);
-        }
-    }
+    //public void addDigitalVideoDisc(DigitalVideoDisc[] dvdList) {
+     //   for (DigitalVideoDisc disc : dvdList) {
+     //       addDigitalVideoDisc(disc);
+     //   }
+    //}
 
     //Nạp chồng Thêm số lượng tham số tùy ý (Varargs)
     public void addDigitalVideoDisc(DigitalVideoDisc... dvds) {
@@ -71,4 +68,5 @@ public class Cart {
         }
         return total;
     }
+    
 }

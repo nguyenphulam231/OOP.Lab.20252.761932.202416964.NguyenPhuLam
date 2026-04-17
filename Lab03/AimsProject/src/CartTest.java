@@ -17,5 +17,15 @@ public class CartTest {
         cart.addDigitalVideoDisc(dvd3);
 
         cart.print();
+        
+     // Test tìm kiếm theo ID
+        System.out.println("\n--- Searching by ID ---");
+        cart.search(1); // Tìm ID có thật
+        cart.search(5); // Tìm ID không có
+
+        // Test tìm kiếm theo Title
+        System.out.println("\n--- Searching by Title ---");
+        cart.search("Lion"); // Tìm đúng/gần đúng
+        cart.search("Avatar"); // Tìm tên không có
     }
 }

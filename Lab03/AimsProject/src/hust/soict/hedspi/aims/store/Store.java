@@ -1,3 +1,6 @@
+package hust.soict.hedspi.aims.store;
+import hust.soict.hedspi.aims.disc.DigitalVideoDisc;
+
 public class Store {
     // Thuộc tính: Mảng chứa các DVD có trong cửa hàng
     private DigitalVideoDisc itemsInStore[] = new DigitalVideoDisc[100]; 

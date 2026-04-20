@@ -1,4 +1,4 @@
-Trả lời câu hỏi mục 8: 
+Trả lời câu hỏi mục 8 Lab02: 
 Hệ thống Java không cho phép thực hiện điều này do vi phạm quy tắc về Chữ ký hàm (Method Signature).
 
 Định nghĩa chữ ký hàm: Để phân biệt các hàm nạp chồng, trình biên dịch Java dựa vào số lượng, kiểu dữ liệu và thứ tự của các tham số. Tên của tham số (như title hay category) không có giá trị trong việc phân biệt các hàm.
@@ -8,3 +8,22 @@ Vấn đề thực tế: * Hàm khởi tạo bằng title có dạng: public Dig
 Hàm khởi tạo bằng category có dạng: public DigitalVideoDisc(String category).
 
 Kết quả: Cả hai hàm đều có cùng một chữ ký là DigitalVideoDisc(String). Khi xuất hiện lệnh gọi new DigitalVideoDisc("Action"), trình biên dịch sẽ bị xung đột vì không thể xác định giá trị chuỗi đó đại diện cho tiêu đề hay danh mục.
+-----------------------------------------------
+Trả lời các câu hỏi mục 3 Lab03
+
+1. Sau khi gọi hàm swap(), tại sao tiêu đề của hai đối tượng vẫn giữ nguyên?
+Trả lời: Bởi vì Java là Pass-by-Value. Khi truyền jungleDVD và cinderellaDVD vào hàm swap(), Java tạo ra hai bản sao của các biến tham chiếu này (copy địa chỉ vùng nhớ). Trong hàm swap(), lệnh đổi chỗ chỉ tác động lên hai bản sao đó, làm chúng trỏ sang địa chỉ của nhau bên trong phạm vi hàm. Hai biến gốc ở hàm main vẫn trỏ về địa chỉ ban đầu trên bộ nhớ Heap, nên dữ liệu không hề thay đổi.
+
+2. Sau khi gọi hàm changeTitle(), tại sao tiêu đề của jungleDVD lại bị thay đổi?
+Trả lời: Dù Java là Pass-by-Value, nhưng "giá trị" được truyền vào ở đây chính là địa chỉ vùng nhớ của đối tượng. Hàm changeTitle() sử dụng bản sao địa chỉ này để truy cập trực tiếp vào đối tượng thực tế trên bộ nhớ Heap thông qua lệnh dvd.setTitle(title). Vì cả biến gốc và bản sao đều trỏ chung đến một đối tượng, nên hành động "sửa nội dung" này sẽ ảnh hưởng đến đối tượng gốc.
+
+Trả lời câu hỏi mục 6 Lab03:
+1. Trả lời câu hỏi trong ảnh
+Câu hỏi: "Write a toString() method for the DigitalVideoDisc class. What should be the return type of this method?"
+
+Trả lời:
+
+Kiểu trả về (Return type): Kiểu String.
+
+Mục đích: Phương thức này được ghi đè (@Override) từ lớp cha Object để trả về một chuỗi đại diện cho thông tin của DVD. Trong bài này, Lâm nên trả về chuỗi theo định dạng: DVD - [Title] - [category] - [Director] - [Length]: [Price] $ để khi in danh sách trong lớp Cart, Lâm chỉ cần gọi dvd.toString() là xong.
+

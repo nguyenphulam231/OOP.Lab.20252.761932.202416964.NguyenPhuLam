@@ -1,57 +1,24 @@
-package hust.soict.hedspi.aims.media;
+package hust.soict.hedspi.aims.media; 
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Book {
+public class Book extends Media { // Kế thừa từ Media 
 
-    // 1. Khai báo các thuộc tính private [cite: 65, 66, 68, 69, 70, 71, 72]
-    private int id;
-    private String title;
-    private String category;
-    private float cost;
+    // Chỉ giữ lại thuộc tính riêng của Book 
     private List<String> authors = new ArrayList<String>();
 
-    // 2. Constructor không tham số [cite: 73]
+    // Constructor mặc định 
     public Book() {
+        super(); // Gọi constructor của lớp cha Media 
     }
 
-    // 3. Getter và Setter cho các thuộc tính (ngoại trừ authors) [cite: 66, 77]
-    public int getId() {
-        return id;
-    }
+    // Các phương thức Getter/Setter cho id, title, category, cost 
+    // KHÔNG cần viết ở đây vì đã có ở Media 
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getCategory() {
-        return category;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
-    }
-
-    public float getCost() {
-        return cost;
-    }
-
-    public void setCost(float cost) {
-        this.cost = cost;
-    }
-
-    // 4. Phương thức thêm tác giả [cite: 80, 81]
+    // Phương thức thêm tác giả
     public void addAuthor(String authorName) {
-        // Kiểm tra xem tên tác giả đã có trong danh sách chưa
+        // Kiểm tra trùng lặp trước khi thêm
         if (!authors.contains(authorName)) {
             authors.add(authorName);
             System.out.println("Added author: " + authorName);
@@ -60,9 +27,9 @@ public class Book {
         }
     }
 
-    // 5. Phương thức xóa tác giả [cite: 80, 82]
+    // Phương thức xóa tác giả
     public void removeAuthor(String authorName) {
-        // Kiểm tra xem tên tác giả có tồn tại để xóa không
+        // Kiểm tra tồn tại trước khi xóa
         if (authors.contains(authorName)) {
             authors.remove(authorName);
             System.out.println("Removed author: " + authorName);

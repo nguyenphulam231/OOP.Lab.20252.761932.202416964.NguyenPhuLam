@@ -12,9 +12,15 @@ public class Book extends Media { // Kế thừa từ Media
     public Book() {
         super(); // Gọi constructor của lớp cha Media 
     }
+    
+    public Book(int id, String title, String category) {
+        super(id, title, category); 
+    }
 
-    // Các phương thức Getter/Setter cho id, title, category, cost 
-    // KHÔNG cần viết ở đây vì đã có ở Media 
+    public Book(int id, String title, String category, float cost) {
+        super(id, title, category, cost); 
+    }
+    
 
     // Phương thức thêm tác giả
     public void addAuthor(String authorName) {

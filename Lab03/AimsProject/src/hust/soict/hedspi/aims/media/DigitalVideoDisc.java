@@ -9,22 +9,22 @@ public class DigitalVideoDisc extends Disc implements Playable {
     // 1. Không khai báo lại director và length vì đã có ở lớp Disc.
     // 2. Không khai báo lại id, title, category, cost vì đã có ở lớp Media.
 
-    // 3. Các Constructor: Sử dụng super() để đẩy dữ liệu lên lớp cha (Disc)
     
-    public DigitalVideoDisc(String title) {
-        super(title);
+	public DigitalVideoDisc(int id, String title) {
+        super(id, title); // Gọi constructor Disc(int id, String title)
     }
 
-    public DigitalVideoDisc(String title, String category, float cost) {
-        super(title, category, cost);
+    public DigitalVideoDisc(int id, String title, String category, float cost) {
+        super(id, title, category, cost);
     }
 
-    public DigitalVideoDisc(String title, String category, String director, float cost) {
-        super(title, category, director, cost);
+
+    public DigitalVideoDisc(int id, String title, String director, int length, float cost) {
+        super(id, title, director, length, cost); 
     }
 
-    public DigitalVideoDisc(String title, String category, String director, int length, float cost) {
-        super(title, category, director, length, cost);
+    public DigitalVideoDisc(int id, String title, String category, float cost, String director, int length) {
+        super(id, title, category, cost, director, length); 
     }
 
     // Ghi đè phương thức toString để hiển thị thông tin chi tiết của DVD
@@ -34,7 +34,6 @@ public class DigitalVideoDisc extends Disc implements Playable {
                 + getDirector() + " - " + getLength() + ": " + getCost() + " $";
     }
 
-    // Phương thức kiểm tra tiêu đề khớp (phục vụ việc tìm kiếm)
     public boolean isMatch(String title) {
         if (this.getTitle() == null) return false;
         return this.getTitle().toLowerCase().contains(title.toLowerCase());

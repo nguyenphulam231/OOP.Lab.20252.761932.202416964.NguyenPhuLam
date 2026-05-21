@@ -28,7 +28,7 @@ Kiểu trả về (Return type): Kiểu String.
 Mục đích: Phương thức này được ghi đè (@Override) từ lớp cha Object để trả về một chuỗi đại diện cho thông tin của DVD. Trong bài này, Lâm nên trả về chuỗi theo định dạng: DVD - [Title] - [category] - [Director] - [Length]: [Price] $ để khi in danh sách trong lớp Cart, Lâm chỉ cần gọi dvd.toString() là xong.
 
 --------------------------------------------------------------------
-Trả lời các câu hỏi mục 8 lab04
+Trả lời các câu hỏi mục 9 lab04
 Câu hỏi 1: Which classes are aggregates of other classes? Checking all constructors of whole classes if they initialize for their parts?
 Trả lời:
 Trong hệ thống AimsProject hiện tại của bài Lab 04, các quan hệ Aggregation (Tụ hợp) bao gồm:
@@ -48,3 +48,10 @@ Loại bỏ các Setter dư thừa (Redundant setters):
 Các thuộc tính định danh không được đổi: Các thuộc tính như id của lớp cha Media chỉ nên được gán một lần duy nhất khi khởi tạo đối tượng thông qua Constructor. Do đó, phương thức setId(int id) là dư thừa và nguy hiểm (vì có thể làm thay đổi ID sản phẩm trong giỏ hàng/kho hàng), cần phải XÓA BỎ.
 
 Các danh sách tổng thể tự quản lý: Hàm setItemsOrdered(ArrayList<Media> items) trong Cart, setItemsInStore(...) trong Store, hay setTracks(...) trong CompactDisc là dư thừa và vi phạm tính đóng gói. Việc thêm/bớt các phần tử bắt buộc phải đi qua các hàm nghiệp vụ kiểm soát logic như addMedia(), removeMedia(), addTrack() chứ không được phép thay thế cả danh sách từ bên ngoài. Do đó các hàm set này cũng cần được loại bỏ.
+
+--------------------------------------------------------------
+Trả lời câu hỏi mục 10 lab04
+If the passing object is not an instance of Media, what happens?
+Nếu đối tượng truyền vào không phải là Media (ví dụ truyền vào một chuỗi String hoặc một đối tượng Cart), toán tử instanceof sẽ trả về false. Nhờ cấu trúc kiểm tra !(o instanceof Media) ở đầu hàm, chương trình sẽ an toàn trả về false ngay lập tức. Điều này giúp hệ thống tránh được lỗi sập chương trình ClassCastException khi cố tình ép kiểu sai.
+
+

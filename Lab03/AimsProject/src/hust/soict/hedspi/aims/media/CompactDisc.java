@@ -17,17 +17,16 @@ public class CompactDisc extends Disc implements Playable {
         super();
     }
 
-    // Các Constructor để khởi tạo CompactDisc
-    public CompactDisc(String title) {
-        super(title);
+    public CompactDisc(int id, String title) {
+        super(id, title); 
     }
 
-    public CompactDisc(String title, String category, float cost) {
-        super(title, category, cost);
+    public CompactDisc(int id, String title, String category, float cost) {
+        super(id, title, category, cost); 
     }
 
-    public CompactDisc(String title, String category, String artist, float cost) {
-        super(title, category, cost);
+    public CompactDisc(int id, String title, String category, float cost, String director, int length, String artist) {
+        super(id, title, category, cost, director, length); 
         this.artist = artist;
     }
 

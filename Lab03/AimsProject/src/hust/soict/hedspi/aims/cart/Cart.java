@@ -1,96 +1,84 @@
 package hust.soict.hedspi.aims.cart;
-import hust.soict.hedspi.aims.media.DigitalVideoDisc;
+
+import java.util.ArrayList; // Import ArrayList theo yêu cầu [cite: 192]
+import hust.soict.hedspi.aims.media.Media; // Import lớp cha Media
 
 public class Cart {
-    public static final int MAX_NUMBERS_ORDERED = 20;
-    private DigitalVideoDisc itemsOrdered[] = new DigitalVideoDisc[MAX_NUMBERS_ORDERED];
-    private int qtyOrdered = 0;
+    
+    // Thay thế mảng cũ bằng ArrayList để quản lý mọi loại Media [cite: 184, 190]
+    // Biến qtyOrdered không còn cần thiết vì ArrayList tự quản lý kích thước thông qua .size() [cite: 185]
+    private ArrayList<Media> itemsOrdered = new ArrayList<Media>();
 
-    //Thêm 1 đĩa (Phương thức gốc)
-    public void addDigitalVideoDisc(DigitalVideoDisc disc) {
-        if (qtyOrdered < MAX_NUMBERS_ORDERED) {
-            itemsOrdered[qtyOrdered] = disc;
-            qtyOrdered++;
-            System.out.println("The disc \"" + disc.getTitle() + "\" has been added.");
-        } else {
-            System.out.println("The cart is almost full. Cannot add: " + disc.getTitle());
-        }
+    // Constructor trống
+    public Cart() {
     }
 
-    // Nạp chồng Thêm một danh sách đĩa (Mảng)
-    //public void addDigitalVideoDisc(DigitalVideoDisc[] dvdList) {
-     //   for (DigitalVideoDisc disc : dvdList) {
-     //       addDigitalVideoDisc(disc);
-     //   }
-    //}
-
-    //Nạp chồng Thêm số lượng tham số tùy ý (Varargs)
-    public void addDigitalVideoDisc(DigitalVideoDisc... dvds) {
-        for (DigitalVideoDisc disc : dvds) {
-            addDigitalVideoDisc(disc);
-        }
-    }
-
-    //Nạp chồng Thêm đúng 2 đĩa cùng lúc
-    public void addDigitalVideoDisc(DigitalVideoDisc dvd1, DigitalVideoDisc dvd2) {
-        addDigitalVideoDisc(dvd1);
-        addDigitalVideoDisc(dvd2);
-    }
-
-    public void removeDigitalVideoDisc(DigitalVideoDisc disc) {
-        int indexFound = -1;
-        
-        // Tìm vị trí của đĩa cần xóa
-        for (int i = 0; i < qtyOrdered; i++) {
-            if (itemsOrdered[i] == disc) {
-                indexFound = i;
-                break;
-            }
+    // Thêm một mặt hàng (Media) bất kỳ vào giỏ hàng 
+    public void addMedia(Media media) {
+        if (media == null) {
+            System.out.println("Cannot add a null item to the cart!");
+            return;
         }
         
-        // Xóa và dồn mảng
-        if (indexFound != -1) {
-            for (int i = indexFound; i < qtyOrdered - 1; i++) {
-                itemsOrdered[i] = itemsOrdered[i + 1]; 
-            }
-            itemsOrdered[qtyOrdered - 1] = null; 
-            qtyOrdered--;
-            System.out.println("The disc \"" + disc.getTitle() + "\" has been removed.");
+        // Kiểm tra trùng lặp (Sẽ sử dụng hàm equals() được override ở mục 10) [cite: 211, 217]
+        if (itemsOrdered.contains(media)) {
+            System.out.println("The media \"" + media.getTitle() + "\" is already in the cart.");
         } else {
-            System.out.println("The disc \"" + disc.getTitle() + "\" was not found in the cart.");
+            itemsOrdered.add(media);
+            System.out.println("The media \"" + media.getTitle() + "\" has been added to the cart.");
         }
     }
 
+    // Xóa một mặt hàng (Media) khỏi giỏ hàng 
+    public void removeMedia(Media media) {
+        if (media == null) {
+            System.out.println("Invalid item to remove!");
+            return;
+        }
+        
+        // Hàm remove() của ArrayList tự động tìm và xóa, trả về true nếu xóa thành công [cite: 217]
+        if (itemsOrdered.remove(media)) {
+            System.out.println("The media \"" + media.getTitle() + "\" has been removed from the cart.");
+        } else {
+            System.out.println("The media \"" + media.getTitle() + "\" was not found in the cart.");
+        }
+    }
+
+    // Tính tổng tiền bằng cách duyệt ArrayList [cite: 198]
     public float totalCost() {
-        float total = 0;
-        for (int i = 0; i < qtyOrdered; i++) {
-            if (itemsOrdered[i] != null) {
-                total += itemsOrdered[i].getCost();
+        float total = 0f;
+        for (Media media : itemsOrdered) {
+            if (media != null) {
+                total += media.getCost(); // Gọi phương thức getCost() kế thừa từ lớp cha Media [cite: 89, 120]
             }
         }
         return total;
     }
     
+    // Phương thức in thông tin giỏ hàng theo danh sách mới [cite: 49, 230]
     public void print() {
         System.out.println("***********************CART***********************");
         System.out.println("Ordered Items:");
         
-        for (int i = 0; i < qtyOrdered; i++) {
-            System.out.println((i + 1) + ". " + itemsOrdered[i].toString());
+        int index = 1;
+        for (Media media : itemsOrdered) {
+            // Sử dụng tính đa hình của toString(): tùy loại Media (CD/DVD/Book) mà in định dạng riêng [cite: 45, 228]
+            System.out.println(index + ". " + media.toString());
+            index++;
         }
         
         System.out.println("Total cost: " + totalCost() + " $");
         System.out.println("***************************************************");
     }
     
- // Tìm kiếm theo ID
+    // Tìm kiếm mặt hàng trong giỏ bằng ID (Yêu cầu lọc/tìm kiếm ở Menu Cart) [cite: 335]
     public void search(int id) {
         boolean found = false;
-        for (int i = 0; i < qtyOrdered; i++) {
-            if (itemsOrdered[i].getId() == id) {
-                System.out.println("Found match by ID: " + itemsOrdered[i].toString());
+        for (Media media : itemsOrdered) {
+            if (media.getId() == id) { // Lấy ID từ lớp cha Media [cite: 87, 89]
+                System.out.println("Found match by ID: " + media.toString());
                 found = true;
-                break;
+                break; // Vì ID là duy nhất nên tìm thấy là dừng vòng lặp
             }
         }
         if (!found) {
@@ -98,12 +86,14 @@ public class Cart {
         }
     }
 
-    // Tìm kiếm theo Title
+    // Tìm kiếm mặt hàng trong giỏ bằng Title (Yêu cầu lọc/tìm kiếm ở Menu Cart) [cite: 335]
     public void search(String title) {
         boolean found = false;
-        for (int i = 0; i < qtyOrdered; i++) {
-            if (itemsOrdered[i].isMatch(title)) {
-                System.out.println("Found match by Title: " + itemsOrdered[i].toString());
+        for (Media media : itemsOrdered) {
+            // Sử dụng phương thức so khớp tiêu đề (giả định bạn đã chuyển phương thức isMatch() sang lớp Media)
+            // Hoặc so sánh trực tiếp bằng: media.getTitle().equalsIgnoreCase(title)
+            if (media.getTitle() != null && media.getTitle().equalsIgnoreCase(title)) {
+                System.out.println("Found match by Title: " + media.toString());
                 found = true;
             }
         }
@@ -112,4 +102,8 @@ public class Cart {
         }
     }
     
+    // Getter để hỗ trợ việc sắp xếp hoặc thao tác danh sách từ bên ngoài nếu cần ở các mục sau [cite: 246, 336]
+    public ArrayList<Media> getItemsOrdered() {
+        return itemsOrdered;
+    }
 }

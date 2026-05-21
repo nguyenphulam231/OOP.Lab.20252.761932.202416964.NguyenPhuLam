@@ -1,5 +1,7 @@
 package hust.soict.hedspi.aims.media;
 
+import java.util.Comparator;
+
 public abstract class Media {
     // Các thuộc tính chung được yêu cầu 
     private int id;
@@ -7,7 +9,8 @@ public abstract class Media {
     private String category;
     private float cost;
 
-
+    public static final Comparator<Media> COMPARE_BY_TITLE_COST = new MediaComparatorByTitleCost();
+    public static final Comparator<Media> COMPARE_BY_COST_TITLE = new MediaComparatorByCostTitle();
     public Media() {
     }
 
@@ -28,6 +31,7 @@ public abstract class Media {
         this.category = category;
         this.cost = cost;
     }
+    
     // Getter và Setter (tạo tự động bằng Source -> Generate Getters and Setters)
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }

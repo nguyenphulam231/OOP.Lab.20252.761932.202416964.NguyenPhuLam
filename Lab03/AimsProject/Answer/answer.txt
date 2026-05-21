@@ -54,4 +54,24 @@ Trả lời câu hỏi mục 10 lab04
 If the passing object is not an instance of Media, what happens?
 Nếu đối tượng truyền vào không phải là Media (ví dụ truyền vào một chuỗi String hoặc một đối tượng Cart), toán tử instanceof sẽ trả về false. Nhờ cấu trúc kiểm tra !(o instanceof Media) ở đầu hàm, chương trình sẽ an toàn trả về false ngay lập tức. Điều này giúp hệ thống tránh được lỗi sập chương trình ClassCastException khi cố tình ép kiểu sai.
 
+------------------------------------------------------------
+Trả lời các câu hỏi mục 12 lab04
+Câu 1: What class should implement the Comparable interface?
 
+Trả lời: Lớp cha Media nên hiện thực hóa (implements) interface Comparable<Media>. Vì tất cả sản phẩm (Book, DVD, CD) đều kế thừa từ Media, việc triển khai ở lớp cha sẽ giúp toàn bộ các mặt hàng áp dụng được một bộ khung so sánh mặc định.
+
+Câu 2: In those classes, how should you implement the compareTo() method to reflect the ordering that we want?
+
+Trả lời: Ta chọn một trong hai quy tắc làm quy tắc mặc định (ví dụ chọn sắp xếp theo Title rồi đến Cost). Hàm compareTo trong lớp Media sẽ được code tương tự như hàm compare của MediaComparatorByTitleCost.
+
+Câu 3: Can we have two ordering rules of the item if we use this Comparable interface approach?
+
+Trả lời: KHÔNG. Khi sử dụng Comparable, một lớp chỉ có thể override duy nhất một phương thức compareTo(Media other). Do đó, nó chỉ đại diện cho một quy tắc sắp xếp tự nhiên / mặc định duy nhất (Natural Ordering). Nếu muốn có nhiều quy tắc linh hoạt (Sort theo nhiều nút bấm khác nhau trên UI), bắt buộc phải dùng giải pháp Comparator như chúng ta vừa code ở trên.
+
+Câu 4: Suppose the DVDs has a different ordering rule from the other media types (by title, then decreasing length, then cost). How would you modify your code to allow this?
+
+Trả lời: Ta có 2 cách sửa đổi:
+
+Cách 1 (Nếu dùng Comparable): Ta tiến hành ghi đè (Override) lại phương thức compareTo() ngay bên trong lớp DigitalVideoDisc. Khi chạy hàm Collections.sort() trên danh sách, Java sẽ tự động đa hình để gọi hàm so sánh riêng này của DVD nếu đối tượng là DVD.
+
+Cách 2 (Nếu dùng Comparator - Khuyên dùng): Tạo riêng một class mới có tên là DVDComparator hiện thực hóa Comparator<Media>. Trong hàm compare(Media m1, Media m2), ta kiểm tra ép kiểu: nếu cả hai cùng là DigitalVideoDisc thì so sánh thêm trường thuộc tính length (vì Media chung chung không có length).

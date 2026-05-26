@@ -3,6 +3,7 @@ package hust.soict.hedspi.aims;
 import hust.soict.hedspi.aims.cart.Cart;
 import hust.soict.hedspi.aims.media.*;
 import hust.soict.hedspi.aims.store.Store;
+import hust.soict.hedspi.aims.screen.StoreScreen;
 
 import java.util.Collections;
 import java.util.Scanner;
@@ -13,11 +14,24 @@ public class Aims {
     private static Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
-        // Khởi tạo một vài dữ liệu mẫu cho Store để test
+
         store.addMedia(new DigitalVideoDisc(1, "The Lion King", "Animation", 19.95f, "Roger Allers", 88));
         store.addMedia(new Book(2, "Java Programming", "Education", 29.99f));
         store.addMedia(new CompactDisc(3, "Thriller", "Music", 15.50f, "Quincy Jones", 42, "Michael Jackson"));
 
+        store.addMedia(new DigitalVideoDisc(4, "The Matrix", "Action", 24.95f, "Wachowskis", 136));
+        store.addMedia(new Book(5, "Design Patterns", "Software Engineering", 59.99f));
+        store.addMedia(new CompactDisc(6, "Abbey Road", "Rock", 18.50f, "The Beatles", 45, "George Martin"));
+        store.addMedia(new DigitalVideoDisc(7, "Inception", "Sci-Fi", 29.95f, "Christopher Nolan", 143));
+        store.addMedia(new CompactDisc(6, "DVD2", "abc", 18.50f, "The G", 45, "ABC"));
+        store.addMedia(new DigitalVideoDisc(1, "Ranger", "MidsizeTruck", 29.95f, "Nguyen Phu Lam", 190));
+
+        System.out.println("--- Launching AIMS Store Graphic User Interface (GUI) ---");
+        new StoreScreen(store, cart);
+
+        /* Tạm thời đóng menu dòng lệnh (Console) lại để tập trung tương tác trên giao diện đồ họa GUI.
+         * Khi nào bạn muốn quay lại dùng Console, chỉ cần xóa cặp dấu cmt bọc khối này đi là được.
+         *
         int choice;
         do {
             showMenu();
@@ -41,6 +55,7 @@ public class Aims {
                     System.out.println("Invalid choice. Please choose again.");
             }
         } while (choice != 0);
+        */
     }
 
     // --- Hệ thống in Menu theo đúng mẫu tài liệu ---

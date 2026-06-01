@@ -14,6 +14,12 @@ public abstract class Media {
     public Media() {
     }
 
+    public Media(String title, String category, float cost) {
+        this.title = title;
+        this.category = category;
+        this.cost = cost;
+   
+    }
     public Media(int id, String title) {
         this.id = id;
         this.title = title;
@@ -32,6 +38,7 @@ public abstract class Media {
         this.cost = cost;
     }
     
+    
     // Getter và Setter (tạo tự động bằng Source -> Generate Getters and Setters)
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
@@ -46,19 +53,34 @@ public abstract class Media {
     public void setCost(float cost) { this.cost = cost; }
     
     @Override
-    public boolean equals(Object o) {
-        // Nếu so sánh với chính nó
-        if (this == o) return true;
+    public boolean equals(Object obj) {
+        // 1. Kiểm tra nếu so sánh chính nó với chính nó (Tối ưu hiệu năng)
+        if (this == obj) {
+            return true;
+        }
         
-        // Nếu đối tượng truyền vào là null hoặc không phải là một kiểu Media
-        if (o == null || !(o instanceof Media)) return false;
+        // 2. Phòng tránh NullPointerException: Nếu đối tượng truyền vào là null thì không bằng nhau
+        if (obj == null) {
+            return false;
+        }
         
-        // Ép kiểu Object về Media để so sánh thuộc tính
-        Media media = (Media) o;
+        // 3. Phòng tránh ClassCastException: Kiểm tra xem obj có thực sự thuộc lớp Media (hoặc con của nó) không
+        // Sử dụng toán tử 'instanceof' theo đúng gợi ý của bài Lab
+        if (!(obj instanceof Media)) {
+            return false;
+        }
         
-        // Kiểm tra xem title có null không trước khi so sánh bằng hàm equals của String
-        if (this.title == null || media.getTitle() == null) return false;
+        // 4. Ép kiểu an toàn sau khi đã qua bước kiểm tra instanceof
+        Media other = (Media) obj;
         
-        return this.title.equalsIgnoreCase(media.getTitle());
+        // 5. So sánh thuộc tính 'title' của hai đối tượng
+        // Cần kiểm tra kịch bản title của một trong hai bên hoặc cả hai bên bị null để tránh NullPointerException
+        if (this.title == null) {
+            return other.title == null;
+        }
+        
+        return this.title.equalsIgnoreCase(other.title); 
+        // Hoặc dùng this.title.equals(other.title) tùy thuộc bạn muốn phân biệt hoa thường hay không.
+        // Thường đối với tựa đề phim/sách, dùng equalsIgnoreCase sẽ giúp hệ thống tìm trùng lặp chính xác hơn.
     }
 }

@@ -75,3 +75,16 @@ Trả lời: Ta có 2 cách sửa đổi:
 Cách 1 (Nếu dùng Comparable): Ta tiến hành ghi đè (Override) lại phương thức compareTo() ngay bên trong lớp DigitalVideoDisc. Khi chạy hàm Collections.sort() trên danh sách, Java sẽ tự động đa hình để gọi hàm so sánh riêng này của DVD nếu đối tượng là DVD.
 
 Cách 2 (Nếu dùng Comparator - Khuyên dùng): Tạo riêng một class mới có tên là DVDComparator hiện thực hóa Comparator<Media>. Trong hàm compare(Media m1, Media m2), ta kiểm tra ép kiểu: nếu cả hai cùng là DigitalVideoDisc thì so sánh thêm trường thuộc tính length (vì Media chung chung không có length).
+
+---------------------------------------------------------
+Trả lời câu hỏi mục 14 lab05:
+"What happens when you don't update for them to catch?"
+Nếu chúng ta không sử dụng khối try-catch để đón bắt và xử lý các ngoại lệ này, chương trình sẽ gặp phải các hậu quả nghiêm trọng sau:
+	Lỗi biên dịch (Compile-time Error):
+	Vì PlayerException (cùng với các ngoại lệ khác như CartFullException, DuplicatedItemException, 	lớp java.lang.Exception). Trình biên dịch của Java ép buộc lập trình viên phải xử lý chúng. Do 	đó, nếu gọi phương thức play() mà không bọc trong khối try-catch, Eclipse/NetBeans sẽ báo lỗi 	gạch đỏ ngay lập tức và không cho phép biên dịch hay chạy chương trình.
+
+	Chương trình bị sập đột ngột (Crash):
+	Trong trường hợp chúng ta né tránh lỗi biên dịch bằng cách khai báo thêm từ khóa throws ở hàm 	main, thì khi ứng dụng đang chạy (Runtime) mà gặp phải lỗi thực tế (ví dụ: đĩa DVD có độ dài 	không hợp lệ như âm hoặc bằng 0), luồng thực thi của chương trình sẽ bị ngắt hoàn toàn, dẫn đến 	việc ứng dụng bị đóng/sập ngay lập tức.
+
+	Mất kiểm soát trên giao diện người dùng (UI):
+	Đối với giao diện đồ họa (Swing), các ngoại lệ không được xử lý sẽ khiến ứng dụng bị đơ, treo 	hoặc không có phản hồi khi người dùng nhấn nút. Chúng ta sẽ không thể hiển thị các hộp thoại 	thông báo lỗi (Error Dialog Box) một cách trực quan (như hình minh họa Figure 49 với thông báo 	"Error: DVD Length is non-positive") để hướng dẫn người dùng biết họ đã thao tác sai ở đâu.

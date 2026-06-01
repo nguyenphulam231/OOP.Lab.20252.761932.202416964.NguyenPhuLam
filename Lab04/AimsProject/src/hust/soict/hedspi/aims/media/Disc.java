@@ -42,4 +42,10 @@ public class Disc extends Media {
         this.director = director;         
         this.length = length;           
     }
+    
+ // Thêm constructor này vào trong lớp Disc.java
+    public Disc(String title, String category, float cost) {
+        super(title, category, cost); // Gọi lên constructor của Media mà bạn đã sửa ở bước trước
+    }
+    
 }

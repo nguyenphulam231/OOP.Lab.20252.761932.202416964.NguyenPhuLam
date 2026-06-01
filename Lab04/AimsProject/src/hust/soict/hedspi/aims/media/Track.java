@@ -1,5 +1,5 @@
 package hust.soict.hedspi.aims.media;
-
+import hust.soict.hedspi.aims.exception.PlayerException; // Thêm dòng này để import class lỗi vào
 /**
  * Lớp Track đại diện cho một bài hát hoặc một phần trong CompactDisc.
  * Lớp này không kế thừa từ Media.
@@ -29,11 +29,16 @@ public class Track implements Playable {
     }
     
     @Override
-    public void play() {
-        System.out.println("Playing track: " + this.getTitle());
-        System.out.println("Track length: " + this.getLength());
-        
-    
+    public void play() throws PlayerException {
+        // Kiểm tra độ dài của Track
+        if (this.getLength() > 0) {
+            System.out.println("Playing track: " + this.getTitle());
+            System.out.println("Track length: " + this.getLength());
+        } else {
+            // In thông báo lỗi ra luồng System.err và ném ngoại lệ
+            System.err.println("ERROR: Track length is non-positive!");
+            throw new PlayerException("ERROR: Track length is non-positive!");
+        }
     }
     
     

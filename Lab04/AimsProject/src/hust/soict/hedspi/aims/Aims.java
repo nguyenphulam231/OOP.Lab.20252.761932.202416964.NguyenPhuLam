@@ -4,6 +4,10 @@ import hust.soict.hedspi.aims.cart.Cart;
 import hust.soict.hedspi.aims.media.*;
 import hust.soict.hedspi.aims.store.Store;
 import hust.soict.hedspi.aims.screen.StoreScreen;
+import hust.soict.hedspi.aims.exception.PlayerException;
+import hust.soict.hedspi.aims.exception.CartFullException;         // ĐÃ THÊM
+import hust.soict.hedspi.aims.exception.DuplicatedItemException;   // ĐÃ THÊM
+import hust.soict.hedspi.aims.exception.NonExistingItemException; // ĐÃ THÊM
 
 import java.util.Collections;
 import java.util.Scanner;
@@ -15,7 +19,8 @@ public class Aims {
 
     public static void main(String[] args) {
 
-        store.addMedia(new DigitalVideoDisc(1, "The Lion King", "Animation", 19.95f, "Roger Allers", 88));
+        // Thêm dữ liệu mẫu vào Store (Nếu Store chưa ném exception thì giữ nguyên)
+        store.addMedia(new DigitalVideoDisc(1, "The Lion King", "Animation", 19.95f, "Roger Allers", -88));
         store.addMedia(new Book(2, "Java Programming", "Education", 29.99f));
         store.addMedia(new CompactDisc(3, "Thriller", "Music", 15.50f, "Quincy Jones", 42, "Michael Jackson"));
 
@@ -108,8 +113,7 @@ public class Aims {
     // --- Các hàm xử lý logic nghiệp vụ ---
 
     private static void handleViewStore() {
-        // Hiển thị danh sách hàng trong kho
-        store.printStore(); // Giả định bạn đã có hàm in hoặc hiển thị danh sách
+        store.printStore(); 
         
         int choice;
         do {
@@ -118,10 +122,10 @@ public class Aims {
             scanner.nextLine();
 
             switch (choice) {
-                case 1: // See a media's details
+                case 1: 
                     System.out.print("Enter the title of the media: ");
                     String title = scanner.nextLine();
-                    Media foundMedia = store.searchByTitle(title); // Giả định hàm tìm kiếm trong Store
+                    Media foundMedia = store.searchByTitle(title); 
                     if (foundMedia != null) {
                         System.out.println(foundMedia.toString());
                         handleMediaDetails(foundMedia);
@@ -129,14 +133,18 @@ public class Aims {
                         System.out.println("Media not found.");
                     }
                     break;
-                case 2: // Add a media to cart
+                case 2: 
                     System.out.print("Enter the title of the media: ");
                     String t = scanner.nextLine();
                     Media m = store.searchByTitle(t);
                     if (m != null) {
-                        cart.addMedia(m);
-                        // In ra số lượng DVD có trong giỏ theo yêu cầu mục 13
-                        System.out.println("Items in cart: " + cart.getItemsOrdered().size()); 
+                        try {
+                            // CẬP NHẬT: Bọc bẫy lỗi khi gọi addMedia ở giao diện Console
+                            cart.addMedia(m);
+                            System.out.println("Items in cart: " + cart.getItemsOrdered().size()); 
+                        } catch (CartFullException | DuplicatedItemException e) {
+                            System.err.println("Cannot add to cart: " + e.getMessage());
+                        }
                     } else {
                         System.out.println("Media not found.");
                     }
@@ -146,12 +154,16 @@ public class Aims {
                     String playTitle = scanner.nextLine();
                     Media pm = store.searchByTitle(playTitle);
                     if (pm != null && pm instanceof Playable) {
-                        ((Playable) pm).play();
+                        try {
+                            ((Playable) pm).play();
+                        } catch (PlayerException e) {
+                            System.err.println("Playback failed: " + e.getMessage());
+                        }
                     } else {
                         System.out.println("This media cannot be played or not found.");
                     }
                     break;
-                case 4: // See current cart
+                case 4: 
                     handleViewCart();
                     break;
                 case 0:
@@ -170,11 +182,20 @@ public class Aims {
             scanner.nextLine();
             switch (choice) {
                 case 1:
-                    cart.addMedia(media);
+                    try {
+                        // CẬP NHẬT: Bọc bẫy lỗi khi gọi addMedia tại menu xem chi tiết
+                        cart.addMedia(media);
+                    } catch (CartFullException | DuplicatedItemException e) {
+                        System.err.println("Cannot add to cart: " + e.getMessage());
+                    }
                     break;
                 case 2:
                     if (media instanceof Playable) {
-                        ((Playable) media).play();
+                        try {
+                            ((Playable) media).play();
+                        } catch (PlayerException e) {
+                            System.err.println("Playback failed: " + e.getMessage());
+                        }
                     } else {
                         System.out.println("This media cannot be played.");
                     }
@@ -194,7 +215,6 @@ public class Aims {
         int opt = scanner.nextInt();
         scanner.nextLine();
         if (opt == 1) {
-            // Viết logic thêm nhanh hoặc nhập tay tùy ý bạn
             System.out.println("Feature developing...");
         } else if (opt == 2) {
             System.out.print("Enter title to remove: ");
@@ -213,12 +233,12 @@ public class Aims {
             scanner.nextLine();
 
             switch (choice) {
-                case 1: // Filter
+                case 1: 
                     System.out.println("1. Filter by ID / 2. Filter by Title");
                     int fOpt = scanner.nextInt();
                     scanner.nextLine();
                     break;
-                case 2: // Sort (Áp dụng bộ Comparator ở Mục 12)
+                case 2: 
                     System.out.println("1. Sort by Title-Cost / 2. Sort by Cost-Title");
                     int sOpt = scanner.nextInt();
                     scanner.nextLine();
@@ -229,24 +249,37 @@ public class Aims {
                     }
                     cart.print();
                     break;
-                case 3: // Remove
+                case 3: 
                     System.out.print("Enter title to remove: ");
                     String rTitle = scanner.nextLine();
                     Media rm = cart.searchByTitle(rTitle);
-                    if (rm != null) cart.removeMedia(rm);
+                    if (rm != null) {
+                        try {
+                            // CẬP NHẬT: Bọc bẫy lỗi khi gọi removeMedia ở giao diện Console
+                            cart.removeMedia(rm);
+                        } catch (NonExistingItemException e) {
+                            System.err.println("Cannot remove from cart: " + e.getMessage());
+                        }
+                    }
                     break;
                 case 4: // Play
                     System.out.print("Enter title to play: ");
                     String pTitle = scanner.nextLine();
                     Media pm = cart.searchByTitle(pTitle);
                     if (pm != null && pm instanceof Playable) {
-                        ((Playable) pm).play();
+                        try {
+                            ((Playable) pm).play();
+                        } catch (PlayerException e) {
+                            System.err.println("Playback failed: " + e.getMessage());
+                        }
+                    } else {
+                        System.out.println("This media cannot be played or not found in cart.");
                     }
                     break;
-                case 5: // Place order
+                case 5: 
                     System.out.println("An order has been successfully created!");
                     cart.clearCart(); 
-                    choice = 0; // Thoát về menu chính
+                    choice = 0; 
                     break;
                 case 0:
                     break;

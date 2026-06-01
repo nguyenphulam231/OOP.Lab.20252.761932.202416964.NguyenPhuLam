@@ -1,5 +1,5 @@
 package hust.soict.hedspi.aims.media;
-
+import hust.soict.hedspi.aims.exception.PlayerException; // Thêm dòng này để import class lỗi vào
 /**
  * Lớp DigitalVideoDisc hiện tại kế thừa từ Disc (theo Mục 5.1).
  * Disc đã kế thừa Media, nên DVD vẫn có đủ id, title, category, cost.
@@ -40,8 +40,15 @@ public class DigitalVideoDisc extends Disc implements Playable {
     }
     
     @Override
-    public void play() {
-        System.out.println("Playing DVD: " + this.getTitle());
-        System.out.println("DVD length: " + this.getLength());
+    public void play() throws PlayerException {
+        // Kiểm tra độ dài sản phẩm có lớn hơn 0 hay không
+        if (this.getLength() > 0) {
+            System.out.println("Playing DVD: " + this.getTitle());
+            System.out.println("DVD length: " + this.getLength());
+        } else {
+            // In thông báo lỗi ra luồng System.err và ném ngoại lệ
+            System.err.println("ERROR: DVD length is non-positive!");
+            throw new PlayerException("ERROR: DVD length is non-positive!");
+        }
     }
 }

@@ -1,5 +1,5 @@
 package hust.soict.hedspi.aims.media;
-
+import hust.soict.hedspi.aims.exception.PlayerException; // Thêm dòng này để import class lỗi vào
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +16,7 @@ public class CompactDisc extends Disc implements Playable {
     public CompactDisc() {
         super();
     }
-
+    
     public CompactDisc(int id, String title) {
         super(id, title); 
     }
@@ -29,7 +29,10 @@ public class CompactDisc extends Disc implements Playable {
         super(id, title, category, cost, director, length); 
         this.artist = artist;
     }
-
+    public CompactDisc(String title, String category, String artist, float cost) {
+        super(title, category, cost); 
+        this.artist = artist;
+    }
     // Getter cho artist
     public String getArtist() {
         return artist;
@@ -75,15 +78,28 @@ public class CompactDisc extends Disc implements Playable {
     }
     
     @Override
-    public void play() {
-        // 1. In thông tin tổng quan của CD 
-        System.out.println("Playing CD: " + this.getTitle() + " (Artist: " + this.artist + ")");
-        System.out.println("CD total length: " + this.getLength());
-        System.out.println("-------------------------");
-        
-        // 2. Vòng lặp duyệt qua từng track và gọi hàm play() của Track đó 
-        for (Track track : tracks) {
-            track.play(); // Gọi hàm play() của lớp Track 
+    public void play() throws PlayerException {
+        // Kiểm tra tổng độ dài của CD
+        if (this.getLength() > 0) {
+            System.out.println("Playing CD: " + this.getTitle() + " (Artist: " + this.getArtist() + ")");
+            System.out.println("Total length: " + this.getLength());
+            
+            // Sử dụng Iterator duyệt qua danh sách các tracks giống hệt mẫu hình số 48
+            java.util.Iterator iter = tracks.iterator();
+            Track nextTrack;
+            
+            while (iter.hasNext()) {
+                nextTrack = (Track) iter.next();
+                try {
+                    nextTrack.play(); // Tiến hành phát track
+                } catch (PlayerException e) {
+                    // Nếu bất kỳ track nào trong CD gặp lỗi không thể phát, ném tiếp ngoại lệ
+                    throw e; 
+                }
+            }
+        } else {
+            System.err.println("ERROR: CD length is non-positive!");
+            throw new PlayerException("ERROR: CD length is non-positive!");
         }
     }
 }

@@ -3,6 +3,9 @@ package hust.soict.hedspi.aims.screen;
 import hust.soict.hedspi.aims.cart.Cart;
 import hust.soict.hedspi.aims.media.Media;
 import hust.soict.hedspi.aims.media.Playable;
+import hust.soict.hedspi.aims.exception.PlayerException;
+import hust.soict.hedspi.aims.exception.CartFullException;         // ĐÃ THÊM
+import hust.soict.hedspi.aims.exception.DuplicatedItemException;   // ĐÃ THÊM
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,11 +14,11 @@ import java.awt.event.ActionListener;
 
 public class MediaStore extends JPanel {
     private Media media;
-    private Cart cart; // Khai báo thêm thuộc tính giỏ hàng để xử lý nút "Add to cart"
+    private Cart cart; 
 
     public MediaStore(Media media, Cart cart) {
         this.media = media;
-        this.cart = cart; // Nhận thực thể cart từ StoreScreen truyền vào
+        this.cart = cart; 
         
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
@@ -29,12 +32,10 @@ public class MediaStore extends JPanel {
         JPanel container = new JPanel();
         container.setLayout(new FlowLayout(FlowLayout.CENTER));
 
-        // Tạo nút "Add to cart" và gắn bộ lắng nghe sự kiện
         JButton addToCartButton = new JButton("Add to cart");
         addToCartButton.addActionListener(new ButtonListener());
         container.add(addToCartButton);
 
-        // Nếu sản phẩm chơi được thì tạo nút "Play" và gắn bộ lắng nghe sự kiện
         if (media instanceof Playable) {
             JButton playButton = new JButton("Play");
             playButton.addActionListener(new ButtonListener());
@@ -50,32 +51,72 @@ public class MediaStore extends JPanel {
         this.setBorder(BorderFactory.createLineBorder(Color.BLACK));
     }
 
-    // Lớp nội bộ xử lý sự kiện click chuột cho các nút bấm
     private class ButtonListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             String buttonText = e.getActionCommand();
 
             if (buttonText.equals("Add to cart")) {
-                // Thực hiện thêm sản phẩm vào giỏ hàng chung
-                cart.addMedia(media);
-                // In ra console để kiểm tra trực quan số lượng phần tử hiện tại
-                System.out.println("[GUI Message] Added \"" + media.getTitle() + "\" to cart.");
-                System.out.println("Current items in cart: " + cart.getItemsOrdered().size());
+                try {
+                    // 1. Thử thêm sản phẩm vào thực thể Giỏ hàng (Có nguy cơ ném lỗi)
+                    cart.addMedia(media);
+                    
+                    // In log ra tab Console để phục vụ việc debug hệ thống
+                    System.out.println("[GUI Message] Added \"" + media.getTitle() + "\" to cart.");
+                    System.out.println("Current items in cart: " + cart.getItemsOrdered().size());
+                    
+                    // 2. Hiển thị hộp thoại thông báo thêm thành công nếu không có ngoại lệ nào bị ném ra
+                    JOptionPane.showMessageDialog(
+                        null, 
+                        "Đã thêm sản phẩm \"" + media.getTitle() + "\" vào giỏ hàng thành công!\n" +
+                        "Tổng số sản phẩm hiện tại trong giỏ: " + cart.getItemsOrdered().size(), 
+                        "Add to Cart Success", 
+                        JOptionPane.INFORMATION_MESSAGE
+                    );
+                    
+                } catch (CartFullException | DuplicatedItemException ex) {
+                    // ĐÓN BẮT NGOẠI LỆ: Nếu giỏ đầy hoặc trùng lặp, hiển thị Popup lỗi màu đỏ
+                    JOptionPane.showMessageDialog(
+                        null, 
+                        ex.getMessage(), 
+                        "Add to Cart Error", 
+                        JOptionPane.ERROR_MESSAGE // Biểu tượng dấu chấm than lỗi màu đỏ
+                    );
+                    
+                    // In log vết lỗi ra Console để theo dõi
+                    ex.printStackTrace();
+                }
                 
             } else if (buttonText.equals("Play")) {
-                // Tạo một cửa sổ hộp thoại JDialog để mô phỏng tính năng Play
-                JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(MediaStore.this), "Playing Media", true);
-                dialog.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 20));
-                
-                // Lấy chuỗi thông tin khi play (bạn có thể điều chỉnh lại chuỗi tùy thuộc vào hàm play() cũ)
-                JLabel label = new JLabel("Playing: " + media.getTitle() + " (Simulating...)");
-                label.setFont(new Font("Arial", Font.PLAIN, 14));
-                
-                dialog.add(label);
-                dialog.setSize(300, 150);
-                dialog.setLocationRelativeTo(MediaStore.this); // Hiển thị ở chính giữa ô sản phẩm
-                dialog.setVisible(true);
+                if (media instanceof Playable) {
+                    try {
+                        // CẬP NHẬT MỤC 14: Gọi hàm play() thực tế từ lõi Core Logic, hàm này có nguy cơ ném PlayerException
+                        ((Playable) media).play();
+                        
+                        // Nếu đĩa chạy trơn tru (độ dài > 0), hiển thị hộp thoại JDialog mô phỏng như cũ
+                        JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(MediaStore.this), "Playing Media", true);
+                        dialog.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 20));
+                        
+                        JLabel label = new JLabel("Playing: " + media.getTitle() + " (Simulating...)");
+                        label.setFont(new Font("Arial", Font.PLAIN, 14));
+                        
+                        dialog.add(label);
+                        dialog.setSize(300, 150);
+                        dialog.setLocationRelativeTo(MediaStore.this);
+                        dialog.setVisible(true);
+                        
+                    } catch (PlayerException ex) {
+                        // ĐÓN BẮT NGOẠI LỆ MỤC 14: Bật ngay hộp thoại cảnh báo lỗi Swing với biểu tượng dấu chấm than đỏ
+                        JOptionPane.showMessageDialog(
+                            null, 
+                            ex.getMessage(),               
+                            "Illegal Media Length",        
+                            JOptionPane.ERROR_MESSAGE      
+                        );
+                        
+                        ex.printStackTrace();
+                    }
+                }
             }
         }
     }
